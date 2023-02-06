@@ -1,10 +1,14 @@
 repeat wait() until game:IsLoaded() == true
+--repeat wait() until game.ReplicatedStorage ~= nil
+--repeat wait() until game.ReplicatedStorage.Items ~= nil
+--repeat wait() until game.Workspace ~= nil 
+--repeat wait() until game.Workspace:FindFirstChild("Map") ~= nil
+repeat wait() until game:IsLoaded() == true
 repeat wait() until game.ReplicatedStorage ~= nil
 repeat wait() until game.ReplicatedStorage.Items ~= nil
 repeat wait() until game.Workspace ~= nil 
 repeat wait() until game.Workspace:FindFirstChild("Map") ~= nil
 
-local lplr = game:GetService("Players").LocalPlayer
 local requestfunc = syn and syn.request or http and http.request or http_request or fluxus and fluxus.request or getgenv().request or request
 local setthreadidentity = syn and syn.set_thread_identity or set_thread_identity or setidentity
 local getthreadidentity = syn and syn.get_thread_identity or get_thread_identity or getidentity
@@ -45,7 +49,7 @@ local function getcustomassetfunc(path)
             setthreadidentity(2)
 		end)
 		local req = requestfunc({
-			Url = "https://raw.githubusercontent.com/BirthScripts/oldtexturepack/main/"..path,
+			Url = "https://raw.githubusercontent.com/supercellgamer/BedwarsPersonal/main/"..path,
 			Method = "GET"
 		})
 		writefile(path, req.Body)
@@ -76,7 +80,7 @@ end
 
 local function downloadassets(path2)
     local json = requestfunc({
-        Url = "https://api.github.com/repos/BirthScripts/oldtexturepack/contents/RobloxBedwarsMinecraft/"..path2,
+        Url = "https://api.github.com/repos/supercellgamer/BedwarsPersonal/contents/"..path2,
         Method = "GET"
     })
     local decodedjson = game:GetService("HttpService"):JSONDecode(json.Body)
@@ -161,6 +165,7 @@ local empty = debug.getupvalue(hotbartile.render, 6)
 local tween = debug.getupvalue(hotbartile.tweenPosition, 1)
 local hotbarimage = getcustomassetfunc("bedwars/ui/widgets.png")
 local healthimage = getcustomassetfunc("bedwars/ui/icons.png")
+local shopimage = getcustomassetfunc("bedwars/ui/container/generic_54.png")
 local flashing = false
 local realcode = ""
 local oldrendercustommatch = hotbarcustommatchsection.render
@@ -241,93 +246,26 @@ for i,v in pairs(getgc(true)) do
         end
     end
 end
-for i,v in pairs(workspace.Map.Worlds:GetChildren()[1]:GetChildren()) do
-    if isfile("bedwars/"..v.Name..".png") and not isfile("bedwars/models/"..v.Name..".png") then
+for i,v in pairs(game.Workspace.Map.Blocks:GetChildren()) do
+    if isfile("bedwars/"..v.Name..".png") then
         for i2,v2 in pairs(v:GetDescendants()) do
             if v2:IsA("Texture") then
                 v2.Texture = getasset("bedwars/"..v.Name..".png")
             end
         end
     end
-    task.wait(0.000001)
 end
-workspace.Map.Worlds:GetChildren()[1].Blocks.DescendantAdded:connect(function(v)
+game.Workspace.Map.Blocks.ChildAdded:connect(function(v)
     if isfile("bedwars/"..v.Name..".png") then
         for i2,v2 in pairs(v:GetDescendants()) do
             if v2:IsA("Texture") then
-                if v2.Texture ~= getasset("bedwars/"..v.Name..".png") then
-                    v2.Texture = getasset("bedwars/"..v.Name..".png")
-                end
+                v2.Texture = getasset("bedwars/"..v.Name..".png")
             end
         end
         v.DescendantAdded:connect(function(v3)
             if v3:IsA("Texture") then
-                if v3.Texture ~= getasset("bedwars/"..v.Name..".png") then
-                    v3.Texture = getasset("bedwars/"..v.Name..".png")
-                end
+                v3.Texture = getasset("bedwars/"..v.Name..".png")
             end
         end)
     end
 end)
-
-workspace.Camera.DescendantAdded:connect(function(v)
-    if isfile("bedwars/models/"..v.Name..".png") and isfile("bedwars/models/"..v.Name..".mesh") then
-        if v.Handle.TextureID ~= getasset("bedwars/models/"..v.Name..".png") and v.Handle.MeshId ~= getasset("bedwars/models/"..v.Name..".mesh") then
-            v.Handle.TextureID = getasset("bedwars/models/"..v.Name..".png")
-            v.Handle.MeshId = getasset("bedwars/models/"..v.Name..".mesh")
-        end
-        for i2,v2 in pairs(v:GetDescendants()) do
-            if v2:IsA("MeshPart") and v2.Name ~= "Handle" then
-                v2.Transparency = 1
-            end
-        end
-    end
-end)
-
-local charconnection
-
-charconnection = game:GetService("Workspace"):WaitForChild(lplr.Name).DescendantAdded:connect(function(v)
-    if isfile("bedwars/models/"..v.Name..".png") and isfile("bedwars/models/"..v.Name..".mesh") then
-        if v.Handle.TextureID ~= getasset("bedwars/models/"..v.Name..".png") and v.Handle.MeshId ~= getasset("bedwars/models/"..v.Name..".mesh") then
-            v.Handle.TextureID = getasset("bedwars/models/"..v.Name..".png")
-            v.Handle.MeshId = getasset("bedwars/models/"..v.Name..".mesh")
-        end
-        for i2,v2 in pairs(v:GetDescendants()) do
-            if v2:IsA("MeshPart") and v2.Name ~= "Handle" then
-                v2.Transparency = 1
-            end
-        end
-    end
-end)
-
-game:GetService("Players").LocalPlayer.CharacterAdded:connect(function(char)
-    charconnection:Disconnect()
-    charconnection = char.DescendantAdded:connect(function(v)
-        if isfile("bedwars/models/"..v.Name..".png") and isfile("bedwars/models/"..v.Name..".mesh") then
-            if v.Handle.TextureID ~= getasset("bedwars/models/"..v.Name..".png") and v.Handle.MeshId ~= getasset("bedwars/models/"..v.Name..".mesh") then
-                v.Handle.TextureID = getasset("bedwars/models/"..v.Name..".png")
-                v.Handle.MeshId = getasset("bedwars/models/"..v.Name..".mesh")
-            end
-            for i2,v2 in pairs(v:GetDescendants()) do
-                if v2:IsA("MeshPart") and v2.Name ~= "Handle" then
-                    v2.Transparency = 1
-                end
-            end
-        end
-    end)
-end)
-
-for i,v in pairs(workspace:GetDescendants()) do
-    if isfile("bedwars/models/"..v.Name..".png") and isfile("bedwars/models/"..v.Name..".mesh") and v:IsA("Accessory") then
-        if v.Handle.TextureID ~= getasset("bedwars/models/"..v.Name..".png") and v.Handle.MeshId ~= getasset("bedwars/models/"..v.Name..".mesh") then
-            v.Handle.TextureID = getasset("bedwars/models/"..v.Name..".png")
-            v.Handle.MeshId = getasset("bedwars/models/"..v.Name..".mesh")
-        end
-        for i2,v2 in pairs(v:GetDescendants()) do
-            if v2:IsA("MeshPart") and v2.Name ~= "Handle" then
-                v2.Transparency = 1
-            end
-        end
-    end
-    task.wait(0.000001)
-end
